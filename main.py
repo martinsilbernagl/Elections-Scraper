@@ -47,7 +47,10 @@ def parse_args(argv: list[str]) -> tuple[str, str]:
 
 def clean_int(text: str) -> int:
     """Convert Czech-formatted integer text to int."""
-    return int(text.replace("\xa0", "").replace(" ", ""))
+    text = text.replace("\xa0", "").replace(" ", "")
+    if text == "-":
+        return 0
+    return int(text)
 
 
 def municipality_links(district_soup: BeautifulSoup, district_url: str) -> list[tuple[str, str, str]]:
@@ -123,7 +126,7 @@ def write_csv(path: str, rows: list[dict[str, int | str]], party_columns: list[s
     ]
     fieldnames = base_columns + party_columns
 
-    with open(path, "w", encoding="utf-8", newline="") as file:
+    with open(path, "w", encoding="utf-8-sig", newline="") as file:
         writer = csv.DictWriter(file, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerows(rows)
